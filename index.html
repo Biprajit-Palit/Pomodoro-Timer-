@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pomodoro Timer Pro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+      background: linear-gradient(135deg, #f5af19, #f12711);
+      color: white;
+      transition: background 0.5s, color 0.5s;
+    }
+    .dark-mode {
+      background: linear-gradient(135deg, #232526, #414345);
+      color: #ffd700;
+    }
+    h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    #timer {
+      font-size: 60px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    input, textarea {
+      padding: 10px;
+      font-size: 16px;
+      width: 80px;
+      text-align: center;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      border: none;
+    }
+    textarea {
+      width: 180px;
+    }
+    .btn {
+      padding: 12px 18px;
+      font-size: 16px;
+      margin: 6px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .start { background-color: #28a745; color: white; }
+    .pause { background-color: #ffc107; color: black; }
+    .reset { background-color: #dc3545; color: white; }
+    .toggle { background-color: #343a40; color: white; }
+    .btn:hover {
+      transform: scale(1.07);
+      opacity: 0.92;
+    }
+    #history {
+      background: rgba(0,0,0,0.14);
+      margin: 24px auto;
+      width: 220px;
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 15px;
+      color: white;
+    }
+    #quote {
+      margin-top: 10px;
+      font-style: italic;
+      font-size: 17px;
+      min-height:24px;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn toggle" onclick="toggleMode()">🌙/☀️</button>
+  <h1>Pomodoro Timer Pro</h1>
+  <label for="customTime">Set Minutes:</label>
+  <input type="number" id="customTime" value="25" min="1" max="120">
+  <button class="btn" onclick="setCustomTime()">Set</button>
+
+  <br>
+  <label for="task">Current Task:</label>
+  <textarea id="task" rows="2" placeholder="What's your task?"></textarea>
+  <div id="timer">25:00</div>
+  <button class="btn start" onclick="startTimer()">Start</button>
+  <button class="btn pause" onclick="pauseTimer()">Pause</button>
+  <button class="btn reset" onclick="resetTimer()">Reset</button>
+  <div id="quote"></div>
+  <div id="history"><b>Pomodoros Completed:</b><br><span id="pomodoroCount">0</span></div>
+
+  <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/1496/1496-preview.mp3"></audio>
+
+  <script>
+    let timer;
+    let customMinutes = 25;
+    let timeLeft = customMinutes * 60;
+    let isRunning = false;
+    let pomodoroCount = 0;
+    let quotes = [
+      "Focus on being productive instead of busy.",
+      "Every accomplishment starts with the decision to try.",
+      "Success is the sum of small efforts, repeated.",
+      "Stay committed, and your dreams will become reality.",
+      "Don’t watch the clock; do what it does. Keep going."
+    ];
+
+    function updateTimerDisplay() {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      document.getElementById("timer").textContent =
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        timer = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+          } else {
+            completePomodoro();
+          }
+        }, 1000);
+      }
+    }
+
+    function completePomodoro() {
+      clearInterval(timer);
+      document.getElementById("alarmSound").play();
+      pomodoroCount++;
+      document.getElementById("pomodoroCount").textContent = pomodoroCount;
+      showQuote();
+      savePomodoro();
+      alert("Time's up! Take a break ☕");
+      isRunning = false;
+    }
+
+    function pauseTimer() {
+      clearInterval(timer);
+      isRunning = false;
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      isRunning = false;
+      setCustomTime();
+      document.getElementById("quote").textContent = '';
+    }
+
+    function setCustomTime() {
+      let minutes = parseInt(document.getElementById("customTime").value);
+      customMinutes = (isNaN(minutes) || minutes < 1) ? 25 : minutes;
+      timeLeft = customMinutes * 60;
+      updateTimerDisplay();
+    }
+
+    function showQuote() {
+      let q = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("quote").textContent = q;
+    }
+
+    function savePomodoro() {
+      let task = document.getElementById("task").value.trim();
+      if (task) {
+        // Save task with timestamp (simple display)
+        let historyDiv = document.getElementById("history");
+        historyDiv.innerHTML += `<br>✔️ ${task} (${new Date().toLocaleTimeString()})`;
+      }
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    updateTimerDisplay();
+  </script>
+</body>
+</html>
