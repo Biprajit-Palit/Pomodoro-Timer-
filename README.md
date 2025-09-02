@@ -18,7 +18,7 @@ Designed for developers, students, and anyone who wants to boost concentration a
 
 ## 🖥️ Demo
 <img width="1919" height="874" alt="image" src="https://github.com/user-attachments/assets/12baebc2-25fc-48d8-bbf5-0bb4278ffc0c" />
-Try it live: [CLICK_HERE](https://github.com/Biprajit-Palit/Pomodoro-Timer-)
+Try it live: (https://biprajit-palit.github.io/Pomodoro-Timer-/)
 
 ---
 
